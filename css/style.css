@@ -69,7 +69,7 @@ header.site-header {
 }
 
 .site-title {
-  font-size: 2rem;
+  font-size: 2.4rem;
   margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
@@ -369,7 +369,7 @@ footer.site-footer {
   }
 
   .site-title {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
   }
 }
 
@@ -597,7 +597,7 @@ footer.site-footer {
 [data-theme="corkboard"] .site-title {
   font-family: Rockwell, "Rockwell Nova", "Courier New", serif;
   font-weight: 700;
-  font-size: 2.5rem;
+  font-size: 3rem;
 }
 
 [data-theme="corkboard"] nav.site-nav a {
