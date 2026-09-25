@@ -595,10 +595,9 @@ footer.site-footer {
 }
 
 [data-theme="corkboard"] .site-title {
-  font-family: Georgia, "Times New Roman", serif;
-  font-style: italic;
+  font-family: Rockwell, "Rockwell Nova", "Courier New", serif;
   font-weight: 700;
-  font-size: 2.1rem;
+  font-size: 2.5rem;
 }
 
 [data-theme="corkboard"] nav.site-nav a {
