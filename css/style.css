@@ -66,7 +66,6 @@ header.site-header {
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
-  padding-right: 330px;
 }
 
 .site-title {
@@ -107,7 +106,7 @@ nav.site-nav a[aria-current="page"] {
 
 .theme-switch {
   position: absolute;
-  top: 0.2rem;
+  top: 3.1rem;
   right: 0;
   display: flex;
   flex-direction: column;
@@ -375,14 +374,10 @@ footer.site-footer {
 }
 
 @media (max-width: 640px) {
-  .site-header .header-inner {
-    padding-right: 0;
-  }
-
   .theme-switch {
     position: static;
     width: auto;
-    justify-content: flex-start;
+    align-items: flex-start;
   }
 }
 
@@ -391,8 +386,9 @@ footer.site-footer {
    ============================================================ */
 
 [data-theme="editorial"] .site-title {
-  text-transform: uppercase;
-  letter-spacing: 0.01em;
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 [data-theme="editorial"] header.site-header {
