@@ -16,7 +16,7 @@ function initThemeSwitch() {
     (t) =>
       `<button type="button" class="theme-btn${t.id === current ? " is-active" : ""}" data-theme-id="${t.id}" aria-pressed="${t.id === current}">${t.label}</button>`
   ).join("");
-  mount.innerHTML = label + buttons;
+  mount.innerHTML = `${label}<div class="theme-switch-buttons">${buttons}</div>`;
 
   mount.addEventListener("click", (event) => {
     const btn = event.target.closest(".theme-btn");

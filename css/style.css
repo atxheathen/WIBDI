@@ -66,7 +66,7 @@ header.site-header {
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
-  padding-right: 230px;
+  padding-right: 330px;
 }
 
 .site-title {
@@ -107,14 +107,13 @@ nav.site-nav a[aria-current="page"] {
 
 .theme-switch {
   position: absolute;
-  top: 0.3rem;
+  top: 0.2rem;
   right: 0;
   display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  width: 210px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+  width: 320px;
 }
 
 .theme-switch-label {
@@ -123,21 +122,27 @@ nav.site-nav a[aria-current="page"] {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--muted);
-  margin-right: 0.15rem;
+}
+
+.theme-switch-buttons {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: nowrap;
 }
 
 .theme-btn {
   font-family: var(--font-body);
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
-  padding: 0.3rem 0.6rem;
+  letter-spacing: 0.02em;
+  padding: 0.28rem 0.5rem;
   border: 1px solid var(--border);
   border-radius: 20px;
   background: transparent;
   color: var(--muted);
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .theme-btn:hover {
@@ -594,7 +599,10 @@ footer.site-footer {
 }
 
 [data-theme="corkboard"] .site-title {
-  font-size: 2.2rem;
+  font-family: Georgia, "Times New Roman", serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 2.1rem;
 }
 
 [data-theme="corkboard"] nav.site-nav a {
@@ -655,4 +663,8 @@ footer.site-footer {
 [data-theme="corkboard"] .editor-note {
   border: none;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="corkboard"] footer.site-footer {
+  color: var(--text);
 }
