@@ -155,13 +155,21 @@ function formatDateForDisplay(iso) {
   });
 }
 
-// Like formatDateForDisplay, but tolerant of manually-typed dates that
-// aren't in YYYY-MM-DD or M/D/YYYY form — falls back to showing the raw text
-// rather than producing an "Invalid Date".
+// For the citation's URL Date: no weekday (unlike the entry's own date),
+// and tolerant of manually-typed dates that aren't in YYYY-MM-DD or
+// M/D/YYYY form — falls back to showing the raw text rather than an
+// "Invalid Date".
 function formatDateSafe(raw) {
   if (!raw) return "";
   const iso = normalizeDate(raw);
-  return /^\d{4}-\d{2}-\d{2}$/.test(iso) ? formatDateForDisplay(iso) : raw;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(iso)) return raw;
+
+  const [y, m, d] = iso.split("-").map(Number);
+  return new Date(y, m - 1, d).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 }
 
 function extractDomain(url) {

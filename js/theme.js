@@ -1,7 +1,7 @@
 const THEMES = [
   { id: "editorial", label: "Editorial" },
   { id: "matrix", label: "Matrix" },
-  { id: "dos", label: "Terminal" },
+  { id: "dos", label: "DOS" },
   { id: "corkboard", label: "Corkboard" },
 ];
 
