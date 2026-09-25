@@ -11,10 +11,12 @@ function initThemeSwitch() {
 
   const current = document.documentElement.getAttribute("data-theme") || "editorial";
 
-  mount.innerHTML = THEMES.map(
+  const label = `<span class="theme-switch-label">Theme</span>`;
+  const buttons = THEMES.map(
     (t) =>
       `<button type="button" class="theme-btn${t.id === current ? " is-active" : ""}" data-theme-id="${t.id}" aria-pressed="${t.id === current}">${t.label}</button>`
   ).join("");
+  mount.innerHTML = label + buttons;
 
   mount.addEventListener("click", (event) => {
     const btn = event.target.closest(".theme-btn");
