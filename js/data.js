@@ -3,10 +3,13 @@
 
 const COLUMNS = {
   date: ["date"],
+  category: ["category"],
   headline: ["headline", "title"],
-  trumpAction: ["what trump did", "trump action", "the action"],
   bidenFrame: ["what if biden did it", "biden frame", "reframe"],
   source: ["source url", "source", "link"],
+  urlDate: ["url date"],
+  urlOrg: ["url new org", "url org", "news org"],
+  urlTitle: ["url article title"],
 };
 
 function parseCSV(text) {
@@ -90,6 +93,7 @@ function rowsToEntries(rows) {
         if (key) entry[key] = cell.trim();
       });
       if (entry.date) entry.date = normalizeDate(entry.date);
+      if (entry.urlDate) entry.urlDate = normalizeDate(entry.urlDate);
       return entry;
     })
     .filter((entry) => entry.date && entry.headline);
@@ -113,11 +117,30 @@ async function fetchEntries() {
   return entries;
 }
 
-function getTodayISO() {
-  const now = new Date();
-  const y = now.getFullYear();
-  const m = String(now.getMonth() + 1).padStart(2, "0");
-  const d = String(now.getDate()).padStart(2, "0");
+// The site "flips" to the next day's entry at 2AM Pacific time (not at each
+// visitor's local midnight, and not at UTC midnight) — so this reads the
+// current date/hour in America/Los_Angeles specifically, DST included, and
+// rolls back to the previous calendar day before 2AM.
+function getCurrentEntryDateISO() {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone: "America/Los_Angeles",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    hour12: false,
+  }).formatToParts(new Date());
+
+  const map = {};
+  parts.forEach((p) => { map[p.type] = p.value; });
+
+  const hour = Number(map.hour) % 24; // Intl can report "24" for midnight
+  const current = new Date(Date.UTC(Number(map.year), Number(map.month) - 1, Number(map.day)));
+  if (hour < 2) current.setUTCDate(current.getUTCDate() - 1);
+
+  const y = current.getUTCFullYear();
+  const m = String(current.getUTCMonth() + 1).padStart(2, "0");
+  const d = String(current.getUTCDate()).padStart(2, "0");
   return `${y}-${m}-${d}`;
 }
 
@@ -132,30 +155,63 @@ function formatDateForDisplay(iso) {
   });
 }
 
+// Like formatDateForDisplay, but tolerant of manually-typed dates that
+// aren't in YYYY-MM-DD or M/D/YYYY form — falls back to showing the raw text
+// rather than producing an "Invalid Date".
+function formatDateSafe(raw) {
+  if (!raw) return "";
+  const iso = normalizeDate(raw);
+  return /^\d{4}-\d{2}-\d{2}$/.test(iso) ? formatDateForDisplay(iso) : raw;
+}
+
+function extractDomain(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+}
+
 function escapeHTML(str) {
   const div = document.createElement("div");
   div.textContent = str || "";
   return div.innerHTML;
 }
 
+// "What Trump Did" is a citation, not a data column: it links back to the
+// real source. When URL Date / URL New Org / URL Article Title are all
+// filled in, it reads like a proper citation; otherwise it falls back to
+// just the link's domain so an incomplete row never breaks.
+function renderCitation(entry) {
+  if (!entry.source) return "";
+
+  const hasFullCitation = entry.urlOrg && entry.urlTitle;
+  const label = hasFullCitation
+    ? `${formatDateSafe(entry.urlDate)} &mdash; ${escapeHTML(entry.urlOrg)}: &ldquo;${escapeHTML(entry.urlTitle)}&rdquo;`
+    : escapeHTML(extractDomain(entry.source));
+
+  return `
+    <div class="entry-citation">
+      <h3>What Trump Did</h3>
+      <p><a href="${escapeHTML(entry.source)}" target="_blank" rel="noopener">${label}</a></p>
+    </div>
+  `;
+}
+
 function renderEntryCard(entry) {
-  const sourceLink = entry.source
-    ? `<p class="entry-source"><a href="${escapeHTML(entry.source)}" target="_blank" rel="noopener">Source</a></p>`
+  const categoryTag = entry.category
+    ? `<span class="entry-category">${escapeHTML(entry.category)}</span>`
     : "";
 
   return `
     <article class="entry-card">
-      <p class="entry-date">${formatDateForDisplay(entry.date)}</p>
+      <div class="entry-meta">
+        ${categoryTag}
+        <p class="entry-date">${formatDateForDisplay(entry.date)}</p>
+      </div>
       <h2 class="entry-headline">${escapeHTML(entry.headline)}</h2>
-      <div class="entry-block">
-        <h3>What Trump Did</h3>
-        <p>${escapeHTML(entry.trumpAction)}</p>
-      </div>
-      <div class="entry-block">
-        <h3>What If Biden Did It?</h3>
-        <p>${escapeHTML(entry.bidenFrame)}</p>
-      </div>
-      ${sourceLink}
+      <p class="entry-body">${escapeHTML(entry.bidenFrame)}</p>
+      ${renderCitation(entry)}
     </article>
   `;
 }

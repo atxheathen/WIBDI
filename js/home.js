@@ -8,7 +8,7 @@ async function renderHome() {
       return;
     }
 
-    const today = getTodayISO();
+    const today = getCurrentEntryDateISO();
     const todayEntry = entries.find((e) => e.date === today);
 
     if (todayEntry) {
