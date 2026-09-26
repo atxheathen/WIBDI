@@ -106,7 +106,7 @@ nav.site-nav a[aria-current="page"] {
 
 .theme-switch {
   position: absolute;
-  top: 3.1rem;
+  top: 3.6rem;
   right: 0;
   display: flex;
   flex-direction: column;
@@ -659,6 +659,12 @@ footer.site-footer {
 [data-theme="corkboard"] .editor-note {
   border: none;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="corkboard"] .editor-note {
+  background: var(--card-bg);
+  color: var(--text);
+  font-style: normal;
 }
 
 [data-theme="corkboard"] footer.site-footer {
