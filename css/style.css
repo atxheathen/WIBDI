@@ -336,6 +336,23 @@ main > p {
   opacity: 0.9;
 }
 
+.signup-form button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.signup-thanks {
+  font-weight: 700;
+  color: var(--text);
+  margin: 0.75rem 0 0;
+}
+
+.signup-error {
+  font-weight: 700;
+  color: var(--accent);
+  margin: 0.75rem 0 0;
+}
+
 /* Footer */
 
 footer.site-footer {
