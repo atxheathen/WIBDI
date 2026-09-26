@@ -10,6 +10,7 @@ const CONFIG = {
   // entry ID for its email question.
   EMAIL_SIGNUP_FORM_ACTION: "https://docs.google.com/forms/d/e/1FAIpQLSetaWLbYisjuBwyX4VkaXK3L-YJHkzhh-sbLrM_6B0WyWIzsg/formResponse",
   EMAIL_SIGNUP_ENTRY_ID: "1814535304",
+  EMAIL_SIGNUP_FREQUENCY_ENTRY_ID: "206352281",
 
   // Your Buttondown username (the part before .buttondown.email in your dashboard URL).
   // For later, once you're ready to actually send the daily digest email —

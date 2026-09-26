@@ -21,11 +21,17 @@ function initSignupForm() {
     const email = input.value.trim();
     if (!email) return;
 
+    const frequencyInput = form.querySelector('input[name="frequency"]:checked');
+    const frequency = frequencyInput ? frequencyInput.value : "";
+
     button.disabled = true;
     button.textContent = "Submitting…";
 
     const body = new URLSearchParams();
     body.set(`entry.${CONFIG.EMAIL_SIGNUP_ENTRY_ID}`, email);
+    if (frequency && CONFIG.EMAIL_SIGNUP_FREQUENCY_ENTRY_ID) {
+      body.set(`entry.${CONFIG.EMAIL_SIGNUP_FREQUENCY_ENTRY_ID}`, frequency);
+    }
 
     try {
       // Google Forms doesn't send CORS headers, so the response is opaque —
