@@ -1,14 +1,13 @@
-// Captures email signups into a Google Form (which drops them into a
-// Sheet you can open anytime) — this is list-building only, no emails
-// are sent yet. Swapping in a real sender later (e.g. Buttondown) won't
-// need to change this file.
+// Captures email signups via a Cloudflare Worker, which adds the contact to
+// Resend as a Daily or Weekly Topic subscriber (and handles unsubscribe —
+// see the Worker's own code for the Resend API call).
 
 function initSignupForm() {
   const box = document.getElementById("signup-box");
   const form = document.getElementById("signup-form");
   if (!box || !form) return;
 
-  if (!CONFIG.EMAIL_SIGNUP_FORM_ACTION || !CONFIG.EMAIL_SIGNUP_ENTRY_ID) {
+  if (!CONFIG.EMAIL_SIGNUP_WORKER_URL) {
     box.style.display = "none";
     return;
   }
@@ -24,25 +23,20 @@ function initSignupForm() {
     const frequencyInput = form.querySelector('input[name="frequency"]:checked');
     const frequency = frequencyInput ? frequencyInput.value : "";
 
+    const existingError = box.querySelector(".signup-error");
+    if (existingError) existingError.remove();
+
     button.disabled = true;
     button.textContent = "Submitting…";
 
-    const body = new URLSearchParams();
-    body.set(`entry.${CONFIG.EMAIL_SIGNUP_ENTRY_ID}`, email);
-    if (frequency && CONFIG.EMAIL_SIGNUP_FREQUENCY_ENTRY_ID) {
-      body.set(`entry.${CONFIG.EMAIL_SIGNUP_FREQUENCY_ENTRY_ID}`, frequency);
-    }
-
     try {
-      // Google Forms doesn't send CORS headers, so the response is opaque —
-      // this only tells us the request went out, not whether Google accepted
-      // it. That's an accepted trade-off of submitting a Form without
-      // sending the visitor to a separate Google-hosted page.
-      await fetch(CONFIG.EMAIL_SIGNUP_FORM_ACTION, {
+      const res = await fetch(CONFIG.EMAIL_SIGNUP_WORKER_URL, {
         method: "POST",
-        mode: "no-cors",
-        body,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, frequency }),
       });
+
+      if (!res.ok) throw new Error("Signup failed");
 
       form.hidden = true;
       const thanks = document.createElement("p");
