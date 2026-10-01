@@ -38,7 +38,7 @@ function initSignupForm() {
 
       if (!res.ok) throw new Error("Signup failed");
 
-      form.hidden = true;
+      form.style.display = "none";
       const thanks = document.createElement("p");
       thanks.className = "signup-thanks";
       thanks.textContent = "Thanks — you're on the list.";
