@@ -188,7 +188,7 @@ function renderCitation(entry) {
     <tr><td style="padding:0 32px 24px;">
       <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#fff6a8;border-radius:4px;">
         <tr><td style="padding:14px 16px;font-family:Arial,Helvetica,sans-serif;">
-          <p style="margin:0 0 4px;font-size:12px;font-weight:bold;text-transform:uppercase;color:#2c2416;">What Trump Did</p>
+          <p style="margin:0 0 6px;font-size:20px;font-weight:bold;text-transform:uppercase;color:#2c2416;">What Trump Did</p>
           <p style="margin:0;font-size:13px;line-height:1.5;"><a href="${escapeHTML(entry.source)}" style="color:#b3261e;">${label}</a></p>
         </td></tr>
       </table>
