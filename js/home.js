@@ -11,16 +11,9 @@ async function renderHome() {
     const today = getCurrentEntryDateISO();
     const todayEntry = entries.find((e) => e.date === today);
 
-    if (todayEntry) {
-      container.innerHTML = renderEntryCard(todayEntry);
-      return;
-    }
-
-    const mostRecent = entries[0]; // already sorted newest first
-    container.innerHTML = `
-      <p class="fallback-note">No entry for today yet — here's the most recent one.</p>
-      ${renderEntryCard(mostRecent)}
-    `;
+    // Shows today's entry when there is one; otherwise just the most recent
+    // entry (already sorted newest first), with no "no entry for today" note.
+    container.innerHTML = renderEntryCard(todayEntry || entries[0]);
   } catch (err) {
     container.innerHTML = `<p class="state-message">${escapeHTML(err.message)}</p>`;
   }
