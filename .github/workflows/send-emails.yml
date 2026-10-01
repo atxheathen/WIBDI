@@ -1,0 +1,33 @@
+name: Send daily/weekly emails
+
+on:
+  schedule:
+    # 7am Pacific is 14:00 UTC (PDT) or 15:00 UTC (PST) depending on the
+    # time of year — run at both, and let the script itself check the real
+    # Pacific hour and skip if it isn't actually 7am there yet.
+    - cron: "0 14 * * *"
+    - cron: "0 15 * * *"
+  workflow_dispatch:
+    inputs:
+      test_email:
+        description: "Send a dry run to this address only (no real subscribers touched). Leave blank for a real send."
+        required: false
+        type: string
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Send emails
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SHEET_CSV_URL: "https://docs.google.com/spreadsheets/d/e/2PACX-1vTovrEdHL4X1r2Ssr33DFqaE1377ivWVnyBO20I71LzI5YN9lWCzfNsL53QHMMs2DZD6Y1VGjlMlZGM/pub?gid=1289964439&single=true&output=csv"
+          FROM_ADDRESS: "What If Biden Did It? <email@whatifbidendidit.com>"
+          TEST_EMAIL: ${{ github.event.inputs.test_email }}
+        run: node .github/scripts/send-emails.js
