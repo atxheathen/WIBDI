@@ -207,8 +207,8 @@ function renderEmailHTML(entry) {
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#a9773f;">
       <tr><td align="center" style="padding:32px 16px;">
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;background-color:#fffdf2;border-radius:8px;">
-          <tr><td style="padding:32px 32px 0;font-family:Georgia,'Times New Roman',serif;">
-            <p style="margin:0;font-size:26px;font-weight:bold;font-style:italic;color:#2c2416;">What If Biden Did It?</p>
+          <tr><td style="padding:32px 32px 0;font-family:Rockwell,'Rockwell Nova','Courier New',serif;">
+            <p style="margin:0;font-size:28px;font-weight:bold;color:#2c2416;">What If Biden Did It?</p>
           </td></tr>
           <tr><td style="padding:0 32px;">
             ${categoryRow}
@@ -303,7 +303,7 @@ async function main() {
   if (!dailyEntry) {
     console.log("No entries at all — nothing to send.");
   } else {
-    const subject = `What If Biden Did It? — ${dailyEntry.headline}`;
+    const subject = dailyEntry.headline;
     if (isTest) {
       await sendTestEmail(dailyEntry, `[DAILY] ${subject}`);
     } else {
