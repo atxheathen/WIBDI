@@ -130,6 +130,22 @@ function rowsToRecords(rows) {
   });
 }
 
+// Keeps the sheet cell's line breaks: a blank line starts a new paragraph,
+// a single line break becomes a <br>. Matches renderBody in js/data.js.
+function renderBody(text) {
+  const paras = (text || "")
+    .replace(/\r\n?/g, "\n")
+    .split(/\n\s*\n/)
+    .map((para) => para.trim())
+    .filter(Boolean);
+  return paras
+    .map((para, i) => {
+      const bottom = i === paras.length - 1 ? 24 : 16;
+      return `<p style="margin:0 0 ${bottom}px;font-size:16px;line-height:1.6;color:#2c2416;font-family:Arial,Helvetica,sans-serif;">${escapeHTML(para).replace(/\n/g, "<br>")}</p>`;
+    })
+    .join("");
+}
+
 function escapeHTML(str) {
   return (str || "")
     .replace(/&/g, "&amp;")
@@ -231,7 +247,7 @@ function renderEmailHTML(entry) {
             ${categoryRow}
             <p style="margin:0 0 16px;font-size:13px;text-transform:uppercase;letter-spacing:0.05em;color:#7a6a50;font-family:Arial,Helvetica,sans-serif;">${formatDateForDisplay(entry.date)}</p>
             <h1 style="margin:0 0 16px;font-size:22px;line-height:1.3;color:#2c2416;font-family:Arial,Helvetica,sans-serif;font-weight:800;">${escapeHTML(entry.headline)}</h1>
-            <p style="margin:0 0 24px;font-size:16px;line-height:1.6;color:#2c2416;font-family:Arial,Helvetica,sans-serif;">${escapeHTML(entry.bidenFrame)}</p>
+            ${renderBody(entry.bidenFrame)}
           </td></tr>
           ${renderCitation(entry)}
           <tr><td style="padding:24px 32px 32px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#7a6a50;text-align:center;border-top:1px solid #e8dfc5;">

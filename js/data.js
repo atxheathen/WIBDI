@@ -211,6 +211,18 @@ function renderCitation(entry) {
   `;
 }
 
+// Keeps the sheet cell's line breaks: a blank line starts a new paragraph,
+// a single line break becomes a <br>.
+function renderBody(text) {
+  return (text || "")
+    .replace(/\r\n?/g, "\n")
+    .split(/\n\s*\n/)
+    .map((para) => para.trim())
+    .filter(Boolean)
+    .map((para) => `<p class="entry-body">${escapeHTML(para).replace(/\n/g, "<br>")}</p>`)
+    .join("");
+}
+
 function renderEntryCard(entry) {
   const categoryTag = entry.category
     ? `<span class="entry-category">${escapeHTML(entry.category)}</span>`
@@ -223,7 +235,7 @@ function renderEntryCard(entry) {
         <p class="entry-date">${formatDateForDisplay(entry.date)}</p>
       </div>
       <h2 class="entry-headline">${escapeHTML(entry.headline)}</h2>
-      <p class="entry-body">${escapeHTML(entry.bidenFrame)}</p>
+      ${renderBody(entry.bidenFrame)}
       ${renderCitation(entry)}
     </article>
   `;
