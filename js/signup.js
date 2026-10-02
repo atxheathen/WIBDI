@@ -1,11 +1,13 @@
 // Captures email signups via a Cloudflare Worker, which adds the contact to
 // Resend as a Daily or Weekly Topic subscriber (and handles unsubscribe —
 // see the Worker's own code for the Resend API call).
+//
+// Drives every .signup-form on the page independently (the compact bar at
+// the top and the full box at the bottom both use this).
 
-function initSignupForm() {
-  const box = document.getElementById("signup-box");
-  const form = document.getElementById("signup-form");
-  if (!box || !form) return;
+function initSignupForm(form) {
+  const box = form.closest(".signup-box, .signup-bar");
+  if (!box) return;
 
   if (!CONFIG.EMAIL_SIGNUP_WORKER_URL) {
     box.style.display = "none";
@@ -54,4 +56,4 @@ function initSignupForm() {
   });
 }
 
-initSignupForm();
+document.querySelectorAll(".signup-form").forEach(initSignupForm);

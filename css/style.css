@@ -305,6 +305,26 @@ main > p,
   font-size: 1.05rem;
 }
 
+.signup-bar {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.85rem 1.25rem;
+  background: var(--card-bg);
+  margin-bottom: 1.5rem;
+}
+
+.signup-bar .signup-form {
+  margin-top: 0;
+  align-items: center;
+}
+
+.signup-bar-label {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text);
+  white-space: nowrap;
+}
+
 .signup-form {
   display: flex;
   gap: 0.5rem;
@@ -593,6 +613,7 @@ footer.site-footer {
 
 [data-theme="dos"] .involve-list li,
 [data-theme="dos"] .signup-box,
+[data-theme="dos"] .signup-bar,
 [data-theme="dos"] .editor-note {
   border-radius: 0;
   background: transparent;
@@ -773,6 +794,7 @@ footer.site-footer {
 }
 
 [data-theme="corkboard"] .signup-box,
+[data-theme="corkboard"] .signup-bar,
 [data-theme="corkboard"] .editor-note {
   border: none;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
