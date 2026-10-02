@@ -299,7 +299,6 @@ main > p,
   padding: 0.5rem 0.75rem;
   background: var(--card-bg);
   margin-bottom: 1.5rem;
-  display: inline-block;
 }
 
 .signup-bar-label {
@@ -307,6 +306,7 @@ main > p,
   font-size: 0.78rem;
   color: var(--text);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .signup-form {
@@ -322,6 +322,7 @@ main > p,
   gap: 0.4rem;
   font-size: 0.75rem;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .signup-frequency label {
@@ -332,9 +333,8 @@ main > p,
 }
 
 .signup-form input[type="email"] {
-  flex: 0 1 auto;
-  width: 120px;
-  max-width: 120px;
+  flex: 1 1 auto;
+  width: auto;
   min-width: 0;
   padding: 0.25rem 0.4rem;
   border: 1px solid var(--border);
@@ -354,6 +354,7 @@ main > p,
   font-size: 0.75rem;
   cursor: pointer;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .signup-form button:hover {
