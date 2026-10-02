@@ -2,14 +2,15 @@ name: Send daily/weekly emails
 
 on:
   schedule:
-    # GitHub's cron schedule is best-effort and can fire late (observed a
-    # 5-6 hour delay on this workflow's first day). Poll every 30 minutes
-    # across a window wide enough to cover 7am Pacific either way DST falls
-    # (12:00-18:00 UTC spans roughly 5am-11am Pacific). The script itself
-    # checks the real Pacific hour and a committed send-state file to make
-    # sure it only actually sends once per day no matter how many of these
-    # triggers land inside the window.
-    - cron: "*/30 12-18 * * *"
+    # GitHub's cron schedule is best-effort and can fire hours late
+    # (observed a 5-6 hour delay on this workflow's first day — actual
+    # firings at noon and 1pm Pacific instead of 7am). Poll every 30
+    # minutes across a wide chunk of the day so a late trigger still gets
+    # caught; the script itself only requires "after 6am Pacific" (no
+    # upper bound — late beats not-at-all) and a committed send-state file
+    # guarantees it only actually sends once per day no matter how many of
+    # these triggers land after that point.
+    - cron: "*/30 12-23 * * *"
   workflow_dispatch:
     inputs:
       test_email:

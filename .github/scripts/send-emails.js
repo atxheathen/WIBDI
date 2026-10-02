@@ -297,11 +297,12 @@ async function main() {
   const state = isTest ? {} : loadState();
   let stateChanged = false;
 
-  // Widened morning window (not just "exactly 7am") since GitHub's cron
-  // schedule is best-effort and can fire late — the state file below is
-  // what actually prevents double-sends, not this window.
-  if (!isTest && (hour < 6 || hour > 11)) {
-    console.log(`Outside the morning send window (currently ${hour}:00 Pacific) — exiting without sending.`);
+  // No upper bound here on purpose: GitHub's cron schedule is best-effort
+  // and can fire hours late. Sending late beats not sending at all — the
+  // state file below (not this check) is what actually prevents a date
+  // from ever being sent twice, so widening this is safe.
+  if (!isTest && hour < 6) {
+    console.log(`Too early (currently ${hour}:00 Pacific, before 6am) — exiting without sending.`);
     return;
   }
 
