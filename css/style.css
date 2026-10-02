@@ -282,6 +282,10 @@ main > p,
   font-weight: 700;
 }
 
+.involve-list + h2 {
+  margin-top: 2.5rem;
+}
+
 .involve-list p {
   margin: 0.15rem 0 0;
   font-size: 0.92rem;
