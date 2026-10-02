@@ -296,14 +296,15 @@ main > p,
 .signup-bar {
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  padding: 0.6rem 1rem;
+  padding: 0.5rem 0.75rem;
   background: var(--card-bg);
   margin-bottom: 1.5rem;
+  display: inline-block;
 }
 
 .signup-bar-label {
   font-weight: 700;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   color: var(--text);
   white-space: nowrap;
 }
@@ -311,43 +312,48 @@ main > p,
 .signup-form {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  gap: 0.4rem;
+  flex-wrap: nowrap;
 }
 
 .signup-frequency {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
-  font-size: 0.82rem;
+  gap: 0.4rem;
+  font-size: 0.75rem;
+  white-space: nowrap;
 }
 
 .signup-frequency label {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.2rem;
   cursor: pointer;
 }
 
 .signup-form input[type="email"] {
-  flex: 0 1 160px;
-  padding: 0.35rem 0.5rem;
+  flex: 0 1 auto;
+  width: 120px;
+  max-width: 120px;
+  min-width: 0;
+  padding: 0.25rem 0.4rem;
   border: 1px solid var(--border);
   border-radius: 6px;
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   background: var(--card-bg);
   color: var(--text);
 }
 
 .signup-form button {
-  padding: 0.35rem 0.8rem;
+  padding: 0.25rem 0.6rem;
   border: none;
   border-radius: 6px;
   background: var(--accent);
   color: #fff;
   font-weight: 700;
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .signup-form button:hover {
@@ -413,6 +419,20 @@ footer.site-footer {
     position: static;
     width: auto;
     align-items: flex-start;
+  }
+
+  .signup-bar {
+    display: block;
+  }
+
+  .signup-form {
+    flex-wrap: wrap;
+  }
+
+  .signup-form input[type="email"] {
+    width: auto;
+    max-width: none;
+    flex: 1 1 140px;
   }
 }
 
