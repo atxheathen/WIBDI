@@ -168,7 +168,8 @@ main h1 {
   margin-bottom: 1rem;
 }
 
-main > p {
+main > p,
+.page-intro p {
   max-width: 62ch;
 }
 
@@ -675,7 +676,92 @@ footer.site-footer {
   box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
 }
 
-[data-theme="corkboard"] .involve-list li,
+/* About / Get Involved blurb: pinned cream card, like the entry cards */
+[data-theme="corkboard"] .page-intro {
+  background: var(--card-bg);
+  padding: 1.4rem 1.6rem;
+  border-radius: 4px;
+  transform: rotate(-0.5deg);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+  position: relative;
+  margin-bottom: 2.2rem;
+}
+
+[data-theme="corkboard"] .page-intro::before {
+  content: "";
+  position: absolute;
+  top: -9px;
+  left: 28px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #ff8a80, #b3261e);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="corkboard"] .page-intro p:last-child {
+  margin-bottom: 0;
+}
+
+/* Get Involved options: masking-tape label + yellow sticky notes */
+[data-theme="corkboard"] h2:has(+ .involve-list) {
+  display: inline-block;
+  background: rgba(240, 230, 200, 0.92);
+  padding: 0.3rem 1rem;
+  transform: rotate(-1.5deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  font-family: var(--font-display);
+  margin-bottom: 1.4rem;
+}
+
+[data-theme="corkboard"] .involve-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.6rem;
+}
+
+[data-theme="corkboard"] .involve-list li {
+  background: #fff6a8;
+  border: none;
+  border-radius: 0;
+  padding: 1.6rem 1.1rem 1.2rem;
+  position: relative;
+  transform: rotate(1.2deg);
+  box-shadow: 2px 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="corkboard"] .involve-list li:nth-child(2n) {
+  background: #c8ecf7;
+  transform: rotate(-1.4deg);
+}
+
+[data-theme="corkboard"] .involve-list li:nth-child(3n) {
+  background: #ffd1dc;
+  transform: rotate(0.6deg);
+}
+
+[data-theme="corkboard"] .involve-list li::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  margin-left: -8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #9fd3ff, #1f5fa8);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="corkboard"] .involve-list a {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+}
+
+[data-theme="corkboard"] .involve-list p {
+  margin-bottom: 0;
+}
+
 [data-theme="corkboard"] .signup-box,
 [data-theme="corkboard"] .editor-note {
   border: none;
