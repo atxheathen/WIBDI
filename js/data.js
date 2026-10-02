@@ -112,7 +112,12 @@ async function fetchEntries() {
   }
 
   const text = await res.text();
-  const entries = rowsToEntries(parseCSV(text));
+  // Failsafe: never publish an entry before its date (or one whose date
+  // can't be read). ISO dates compare correctly as plain strings.
+  const today = getCurrentEntryDateISO();
+  const entries = rowsToEntries(parseCSV(text)).filter(
+    (e) => /^\d{4}-\d{2}-\d{2}$/.test(e.date) && e.date <= today
+  );
   entries.sort((a, b) => (a.date < b.date ? 1 : -1)); // newest first
   return entries;
 }

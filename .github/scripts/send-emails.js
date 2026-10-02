@@ -315,7 +315,8 @@ async function main() {
   });
 
   const contentEntries = records
-    .filter((r) => r.date && r.headline)
+    // Never fall back to a future-dated entry (ISO dates compare as strings).
+    .filter((r) => r.date && r.headline && /^\d{4}-\d{2}-\d{2}$/.test(r.date) && r.date <= today)
     .sort((a, b) => (a.date < b.date ? 1 : -1)); // newest first
 
   // --- Daily ---
@@ -347,7 +348,7 @@ async function main() {
     } else {
       const todayRow = recordsByDate[today];
       const weeklyDate = todayRow && todayRow.weeklyEmail;
-      const weeklyEntry = weeklyDate ? recordsByDate[weeklyDate] : null;
+      const weeklyEntry = weeklyDate && weeklyDate <= today ? recordsByDate[weeklyDate] : null;
 
       if (!weeklyEntry || !weeklyEntry.headline) {
         console.log(
