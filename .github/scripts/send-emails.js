@@ -13,6 +13,23 @@
 // transactional API (bypassing Resend's segment/topic broadcast) instead of
 // sending to real subscribers — this is the dry-run path.
 
+const fs = require("fs");
+const path = require("path");
+
+const STATE_FILE = path.join(__dirname, "state.json");
+
+function loadState() {
+  try {
+    return JSON.parse(fs.readFileSync(STATE_FILE, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+function saveState(state) {
+  fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2) + "\n");
+}
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SHEET_CSV_URL = process.env.SHEET_CSV_URL;
 const FROM_ADDRESS = process.env.FROM_ADDRESS || "What If Biden Did It? <email@whatifbidendidit.com>";
@@ -277,9 +294,14 @@ async function sendBroadcast(entry, subject, topicId) {
 async function main() {
   const isTest = Boolean(TEST_EMAIL);
   const { iso: today, hour, weekday } = pacificParts();
+  const state = isTest ? {} : loadState();
+  let stateChanged = false;
 
-  if (!isTest && hour !== 7) {
-    console.log(`Not 7am Pacific yet (currently ${hour}:00 Pacific) — exiting without sending.`);
+  // Widened morning window (not just "exactly 7am") since GitHub's cron
+  // schedule is best-effort and can fire late — the state file below is
+  // what actually prevents double-sends, not this window.
+  if (!isTest && (hour < 6 || hour > 11)) {
+    console.log(`Outside the morning send window (currently ${hour}:00 Pacific) — exiting without sending.`);
     return;
   }
 
@@ -296,40 +318,54 @@ async function main() {
     .sort((a, b) => (a.date < b.date ? 1 : -1)); // newest first
 
   // --- Daily ---
-  const dailyEntry = recordsByDate[today] && recordsByDate[today].headline
-    ? recordsByDate[today]
-    : contentEntries[0];
-
-  if (!dailyEntry) {
-    console.log("No entries at all — nothing to send.");
+  if (!isTest && state.lastDailySent === today) {
+    console.log(`Daily already sent today (${today}) — skipping.`);
   } else {
-    const subject = dailyEntry.headline;
-    if (isTest) {
-      await sendTestEmail(dailyEntry, `[DAILY] ${subject}`);
+    const dailyEntry = recordsByDate[today] && recordsByDate[today].headline
+      ? recordsByDate[today]
+      : contentEntries[0];
+
+    if (!dailyEntry) {
+      console.log("No entries at all — nothing to send.");
     } else {
-      await sendBroadcast(dailyEntry, subject, DAILY_TOPIC_ID);
+      const subject = dailyEntry.headline;
+      if (isTest) {
+        await sendTestEmail(dailyEntry, `[DAILY] ${subject}`);
+      } else {
+        await sendBroadcast(dailyEntry, subject, DAILY_TOPIC_ID);
+        state.lastDailySent = today;
+        stateChanged = true;
+      }
     }
   }
 
   // --- Weekly (Wednesdays only, or always in test mode so it can be verified) ---
   if (isTest || weekday === "Wed") {
-    const todayRow = recordsByDate[today];
-    const weeklyDate = todayRow && todayRow.weeklyEmail;
-    const weeklyEntry = weeklyDate ? recordsByDate[weeklyDate] : null;
-
-    if (!weeklyEntry || !weeklyEntry.headline) {
-      console.log(
-        `Weekly send skipped: no "Weekly Email" lookup date set for today, or no entry found for that date (looked for ${weeklyDate || "nothing"}).`
-      );
+    if (!isTest && state.lastWeeklySent === today) {
+      console.log(`Weekly already sent today (${today}) — skipping.`);
     } else {
-      const subject = `This Week: ${weeklyEntry.headline}`;
-      if (isTest) {
-        await sendTestEmail(weeklyEntry, `[WEEKLY] ${subject}`);
+      const todayRow = recordsByDate[today];
+      const weeklyDate = todayRow && todayRow.weeklyEmail;
+      const weeklyEntry = weeklyDate ? recordsByDate[weeklyDate] : null;
+
+      if (!weeklyEntry || !weeklyEntry.headline) {
+        console.log(
+          `Weekly send skipped: no "Weekly Email" lookup date set for today, or no entry found for that date (looked for ${weeklyDate || "nothing"}).`
+        );
       } else {
-        await sendBroadcast(weeklyEntry, subject, WEEKLY_TOPIC_ID);
+        const subject = `This Week: ${weeklyEntry.headline}`;
+        if (isTest) {
+          await sendTestEmail(weeklyEntry, `[WEEKLY] ${subject}`);
+        } else {
+          await sendBroadcast(weeklyEntry, subject, WEEKLY_TOPIC_ID);
+          state.lastWeeklySent = today;
+          stateChanged = true;
+        }
       }
     }
   }
+
+  if (stateChanged) saveState(state);
 }
 
 main().catch((err) => {

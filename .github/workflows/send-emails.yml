@@ -2,17 +2,23 @@ name: Send daily/weekly emails
 
 on:
   schedule:
-    # 7am Pacific is 14:00 UTC (PDT) or 15:00 UTC (PST) depending on the
-    # time of year — run at both, and let the script itself check the real
-    # Pacific hour and skip if it isn't actually 7am there yet.
-    - cron: "0 14 * * *"
-    - cron: "0 15 * * *"
+    # GitHub's cron schedule is best-effort and can fire late (observed a
+    # 5-6 hour delay on this workflow's first day). Poll every 30 minutes
+    # across a window wide enough to cover 7am Pacific either way DST falls
+    # (12:00-18:00 UTC spans roughly 5am-11am Pacific). The script itself
+    # checks the real Pacific hour and a committed send-state file to make
+    # sure it only actually sends once per day no matter how many of these
+    # triggers land inside the window.
+    - cron: "*/30 12-18 * * *"
   workflow_dispatch:
     inputs:
       test_email:
         description: "Send a dry run to this address only (no real subscribers touched). Leave blank for a real send."
         required: false
         type: string
+
+permissions:
+  contents: write
 
 jobs:
   send:
@@ -31,3 +37,10 @@ jobs:
           FROM_ADDRESS: "What If Biden Did It? <email@whatifbidendidit.com>"
           TEST_EMAIL: ${{ github.event.inputs.test_email }}
         run: node .github/scripts/send-emails.js
+
+      - name: Save send-state if it changed
+        run: |
+          git config user.name "atxheathen"
+          git config user.email "atxheathen@users.noreply.github.com"
+          git add .github/scripts/state.json
+          git diff --cached --quiet && echo "No state change." || (git commit -m "Update email send-state [skip ci]" && git push)
