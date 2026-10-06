@@ -1,8 +1,9 @@
 // Sends the Daily and (Wednesday-only) Weekly digest emails via Resend.
 //
-// Daily: whatever entry matches today's date (Pacific calendar day),
-// falling back to the most recent entry if today has no row yet — same
-// fallback behavior as the website itself.
+// Daily: only the entry dated today (Pacific calendar day). If today has no
+// entry, no Daily email goes out — unlike the website, there is deliberately
+// no fallback to the most recent entry, so a skipped day never resends old
+// content to subscribers.
 //
 // Weekly: only runs on Wednesdays. Looks up *today's own row* in the sheet,
 // reads its "Weekly Email" column (a date), then sends the content entry
@@ -330,21 +331,19 @@ async function main() {
     if (r.date) recordsByDate[r.date] = r;
   });
 
-  const contentEntries = records
-    // Never fall back to a future-dated entry (ISO dates compare as strings).
-    .filter((r) => r.date && r.headline && /^\d{4}-\d{2}-\d{2}$/.test(r.date) && r.date <= today)
-    .sort((a, b) => (a.date < b.date ? 1 : -1)); // newest first
-
   // --- Daily ---
   if (!isTest && state.lastDailySent === today) {
     console.log(`Daily already sent today (${today}) — skipping.`);
   } else {
+    // Unlike the website (which falls back to the most recent entry), email
+    // only goes out for an entry actually dated today — otherwise a skipped
+    // day would resend old content to subscribers.
     const dailyEntry = recordsByDate[today] && recordsByDate[today].headline
       ? recordsByDate[today]
-      : contentEntries[0];
+      : null;
 
     if (!dailyEntry) {
-      console.log("No entries at all — nothing to send.");
+      console.log(`No entry for today (${today}) — not sending a Daily email.`);
     } else {
       const subject = dailyEntry.headline;
       if (isTest) {
