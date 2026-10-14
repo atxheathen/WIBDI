@@ -251,6 +251,9 @@ function renderEmailHTML(entry) {
             ${renderBody(entry.bidenFrame)}
           </td></tr>
           ${renderCitation(entry)}
+          <tr><td align="center" style="padding:0 32px 24px;text-align:center;font-family:Arial,Helvetica,sans-serif;">
+            <a href="https://whatifbidendidit.com" style="font-size:16px;font-weight:bold;color:#b3261e;">WhatifBidenDidIt.com</a>
+          </td></tr>
           <tr><td style="padding:24px 32px 32px;font-family:Arial,Helvetica,sans-serif;font-size:12px;color:#7a6a50;text-align:center;border-top:1px solid #e8dfc5;">
             <p style="margin:16px 0 8px;">Satire and commentary. Not affiliated with any campaign, party, or candidate.</p>
             <p style="margin:0;"><a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color:#7a6a50;">Unsubscribe</a></p>
